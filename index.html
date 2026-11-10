@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>ITDesk Pro - Connection Test</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: Arial, sans-serif;
+      background: #f4f5f7;
+      color: #172b4d;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #dfe1e6;
+      border-radius: 12px;
+      padding: 30px;
+      width: min(440px, 85%);
+      box-shadow: 0 6px 20px #0001;
+    }
+    button {
+      background: #0c66e4;
+      color: white;
+      border: 0;
+      padding: 12px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>ITDesk Pro</h2>
+    <p>GitHub Pages + Google Apps Script</p>
+
+    <button onclick="testConnection()">
+      Test Backend Connection
+    </button>
+
+    <div id="result">Ready to test</div>
+  </div>
+
+  <script>
+    // ใส่ URL Web App ของโปรเจกต์ทดสอบ
+    const API_URL = "https://script.google.com/macros/s/AKfycbyOk9ySnADOTIlnHSh3fKcuYCIUIfu846lnp8mGGftdjUEQ1TwnPLv7IApJLfHCUBg2xA/exec";
+
+    async function testConnection() {
+      const result = document.getElementById("result");
+      result.textContent = "Connecting...";
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "GET",
+          redirect: "follow",
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (data.success &&
+            data.application === "ITDesk Pro") {
+          result.textContent =
+            "CONNECTED SUCCESSFULLY\n\n" +
+            JSON.stringify(data, null, 2);
+        } else {
+          result.textContent =
+            "Unexpected response:\n" +
+            JSON.stringify(data, null, 2);
+        }
+
+      } catch (error) {
+        result.textContent =
+          "CONNECTION FAILED\n\n" +
+          error.message +
+          "\n\nCheck browser Console (F12).";
+
+        console.error(error);
+      }
+    }
+  </script>
+
+</body>
+</html>
